@@ -1,8 +1,10 @@
 import sys
+import tkinter
 from src.URL import URL
-from src.HTMLRenderer import HTMLRenderer
+from src.Browser import Browser
 
-renderer = HTMLRenderer()
+browser = Browser()
 
 if __name__ == "__main__":
-    renderer.load(URL(sys.argv[1]))
+    browser.load(URL(sys.argv[1]))
+    tkinter.mainloop()
