@@ -1,20 +1,34 @@
+import os
 import ssl
 import socket
 
 class URL:
     def __init__(self, url: str):
         self.scheme, url = url.split("://", 1)
-        assert self.scheme in ["http", "https"]
+        assert self.scheme in ["http", "https", "file"]
 
-        self.port: int = 80 if self.scheme == "http" else 443
+        if self.scheme in ["http", "https"]:
+            self.port: int = 80 if self.scheme == "http" else 443
 
-        if not "/" in url: url = url + "/"
+            if not "/" in url: url = url + "/"
 
-        self.host, url = url.split("/", 1)
-        if ":" in self.host: self.port = int(self.host.split(":", 1)[1])
-        self.path = "/" + url
+            self.host, url = url.split("/", 1)
+            if ":" in self.host:
+                self.port = int(self.host.split(":", 1)[1])
+            self.path = "/" + url
+        else:
+            self.file_path = url
 
     def request(self):
+        if self.scheme == "file":
+            absolute_path = os.path.abspath(self.file_path)
+            if not os.path.exists(absolute_path):
+                return "No file found"
+            if os.path.isdir(absolute_path):
+                return "Cannot read directory"
+            with open(absolute_path, 'r') as input_file:
+                return input_file.readlines()
+
         socket_connection = socket.socket(
             family=socket.AF_INET,
             type=socket.SOCK_STREAM,
