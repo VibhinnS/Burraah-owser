@@ -25,7 +25,6 @@ class URL:
         if self.scheme == "https":
             ctx = ssl.create_default_context()
             socket_connection = ctx.wrap_socket(socket_connection, server_hostname=self.host)
-            socket_connection.r
         request = (
             f"GET {self.path} HTTP/1.0\r\n"
             f"Host: {self.host}\r\n"
