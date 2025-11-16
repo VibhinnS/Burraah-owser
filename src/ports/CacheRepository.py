@@ -1,11 +1,13 @@
+import socket
 from abc import ABC, abstractmethod
+from src.domain.url.URL import URL
 
-class Cache(ABC):
+class CacheRepository(ABC):
     @abstractmethod
-    def get(self, item):
+    def acquire(self, item: URL):
         pass
 
     @abstractmethod
-    def set(self, item):
+    def release(self, item: URL, sock: socket.socket):
         pass
 

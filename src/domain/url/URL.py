@@ -1,7 +1,10 @@
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
 class URL:
-    def __init__(self, scheme, host=None, port=None, path=None, file_path=None):
-        self.scheme = scheme
-        self.host = host
-        self.port = port
-        self.path = path
-        self.file_path = file_path
+    scheme: str
+    host: Optional[str] = None
+    port: Optional[int] = None
+    path: Optional[str] = None
+    file_path: Optional[str] = None
