@@ -6,13 +6,15 @@ class RequestService:
     MAX_REDIRECTS: int = 10
 
     def fetch(self, url: URL):
+        adapter = AdapterFactory.get(url)
+
         for _ in range(self.MAX_REDIRECTS):
-            adapter = AdapterFactory.get(url)
             status, content, headers = adapter.request(url)
 
             if status.startswith("3") and "location" in headers:
                 redirect_url = headers["location"]
                 url = URLParser.parse(redirect_url)
+                adapter = AdapterFactory.get(url)
                 continue
 
             return content
