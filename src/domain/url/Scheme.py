@@ -5,3 +5,4 @@ class Scheme(Enum):
     HTTP_1 = "HTTP/1.1"
     HTTPS = "HTTPS"
     FILE = "FILE"
+    DATA = "DATA"

@@ -1,8 +1,8 @@
 from src.domain.url.URL import URL
 from src.domain.url.Scheme import Scheme
-from src.adapters.HTTPSAdapter import HTTPSAdapter
-from src.adapters.HTTPAdapter import HTTPAdapter
-from src.adapters.FileAdapter import FileAdapter
+from src.adapters.repositories.HTTPSAdapter import HTTPSAdapter
+from src.adapters.repositories.HTTPAdapter import HTTPAdapter
+from src.adapters.repositories.FileAdapter import FileAdapter
 
 class AdapterFactory:
     @staticmethod

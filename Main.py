@@ -1,9 +1,13 @@
+import sys
 import tkinter
 from src.domain.url.URL import URL
+from src.adapters.parser.URLParser import URLParser
 from src.ui.Browser import Browser
 
 browser = Browser()
 
 if __name__ == "__main__":
-    browser.load(URL("https://browser.engineering/graphics.html"))
+    user_input = sys.argv[1]
+    url: URL = URLParser.parse(user_input)
+    browser.load(url)
     tkinter.mainloop()
