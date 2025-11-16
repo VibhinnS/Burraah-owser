@@ -1,7 +1,6 @@
 import socket
 from src.ports.ConnectionRepository import ConnectionRepository
 from src.domain.url.URL import URL
-from src.domain.url.Scheme import Scheme
 from src.domain.url.Request import Request
 
 class HTTPAdapter(ConnectionRepository):
@@ -13,7 +12,7 @@ class HTTPAdapter(ConnectionRepository):
         socket_connection.connect((url.host, url.port))
 
         request = (
-            f"{Request.GET.value} {url.path} {Scheme.HTTP.value}\r\n"
+            f"{Request.GET.value} {url.path} HTTP/1.1\r\n"
             f"{Request.HOST.value}: {url.host}\r\n"
             f"{Request.CONNECTION.value}: Close\r\n"
             "\r\n"
@@ -27,11 +26,10 @@ class HTTPAdapter(ConnectionRepository):
         while True:
             line = response.readline()
             if line == "\r\n": break
-            header, value = line.split(":", 1)
-            response_headers[header.casefold()] = value.strip()
-
-        response_headers["Status"] = status
+            if line:
+                header, value = line.split(":", 1)
+                response_headers[header.casefold()] = value.strip()
 
         content = response.read()
         socket_connection.close()
-        return content
+        return status, content, response_headers

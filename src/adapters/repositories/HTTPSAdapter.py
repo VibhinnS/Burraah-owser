@@ -1,9 +1,10 @@
+import json
 import socket
 import ssl
 from src.ports.ConnectionRepository import ConnectionRepository
 from src.domain.url.URL import URL
-from src.domain.url.Scheme import Scheme
 from src.domain.url.Request import Request
+from src.adapters.parser.URLParser import URLParser
 
 class HTTPSAdapter(ConnectionRepository):
     def request(self, url: URL):
@@ -15,7 +16,7 @@ class HTTPSAdapter(ConnectionRepository):
         socket_connection = ctx.wrap_socket(socket_connection, server_hostname=url.host)
 
         request = (
-            f"{Request.GET.value} {url.path} {Scheme.HTTP.value}\r\n"
+            f"{Request.GET.value} {url.path} HTTP/1.1\r\n"
             f"{Request.HOST.value}: {url.host}\r\n"
             f"{Request.CONNECTION.value}: Close\r\n"
             "\r\n"
@@ -23,7 +24,8 @@ class HTTPSAdapter(ConnectionRepository):
 
         socket_connection.send(request.encode("utf8"))
         response = socket_connection.makefile("r", encoding="utf8", newline="\r\n")
-        status = response.readline()
+        status_line = response.readline()
+        version, status, explanation = status_line.split(" ", 2)
         response_headers = {}
 
         while True:
@@ -32,9 +34,10 @@ class HTTPSAdapter(ConnectionRepository):
             header, value = line.split(":", 1)
             response_headers[header.casefold()] = value.strip()
 
-        response_headers["Status"] = status
+        response_headers["status"] = status
+        print(json.dumps(response_headers, indent=2))
 
         content = response.read()
         socket_connection.close()
-        return content
+        return status, content, response_headers
 

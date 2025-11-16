@@ -2,7 +2,7 @@ import tkinter
 from src.domain.url.URL import URL
 from src.domain.html.HTMLExtractor import HTMLExtractor
 from layout_engine import compute_layout
-from src.adapters.factory.AdapterFactory import AdapterFactory
+from src.services.RequestService import RequestService
 
 class Browser:
     def __init__(self):
@@ -23,10 +23,10 @@ class Browser:
         self.canvas.pack()
         self.display_list: list = []
         self.scroll = 0
+        self.request_service = RequestService()
 
     def load(self, url: URL) -> None:
-        connection_adapter = AdapterFactory.get(url)
-        body = connection_adapter.request(url)
+        body = self.request_service.fetch(url)
         raw_content = self.extractor.extract(body)
         self.layout(raw_content)
         self.draw()
