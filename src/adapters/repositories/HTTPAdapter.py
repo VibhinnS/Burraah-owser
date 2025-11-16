@@ -20,7 +20,8 @@ class HTTPAdapter(ConnectionRepository):
 
         socket_connection.send(request.encode("utf8"))
         response = socket_connection.makefile("r", encoding="utf8", newline="\r\n")
-        status = response.readline()
+        status_line = response.readline()
+        version, status, explanation = status_line.split(" ", 2)
         response_headers = {}
 
         while True:
