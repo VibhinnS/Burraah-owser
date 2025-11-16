@@ -1,6 +1,7 @@
 import tkinter
 from src.URL import URL
 from src.HTMLExtractor import HTMLExtractor
+from layout_engine import compute_layout
 
 class Browser:
     def __init__(self):
@@ -29,14 +30,13 @@ class Browser:
         self.draw()
 
     def layout(self, raw_content: str):
-        cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        for character in raw_content:
-            if cursor_x >= self.width:
-                cursor_y += self.VSTEP
-                cursor_x = self.HSTEP
-            self.display_list.append((cursor_x, cursor_y, character))
-            cursor_x += self.HSTEP
+        self.display_list = compute_layout(
+            raw_content,
+            self.width,
+            self.HSTEP,
+            self.VSTEP
 
+        )
     def draw(self):
         self.canvas.delete("all")
         for x_coord, y_coord, character in self.display_list:
