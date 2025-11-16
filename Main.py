@@ -1,6 +1,6 @@
 import tkinter
 from src.domain.url.URL import URL
-from src.Browser import Browser
+from src.ui.Browser import Browser
 
 browser = Browser()
 
