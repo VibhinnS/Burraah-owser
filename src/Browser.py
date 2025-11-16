@@ -1,7 +1,8 @@
 import tkinter
-from src.URL import URL
-from src.HTMLExtractor import HTMLExtractor
+from src.domain.url.URL import URL
+from src.domain.html.HTMLExtractor import HTMLExtractor
 from layout_engine import compute_layout
+from src.adapters.factory.AdapterFactory import AdapterFactory
 
 class Browser:
     def __init__(self):
@@ -24,7 +25,8 @@ class Browser:
         self.scroll = 0
 
     def load(self, url: URL) -> None:
-        body = url.request()
+        connection_adapter = AdapterFactory.get(url)
+        body = connection_adapter.request(url)
         raw_content = self.extractor.extract(body)
         self.layout(raw_content)
         self.draw()
