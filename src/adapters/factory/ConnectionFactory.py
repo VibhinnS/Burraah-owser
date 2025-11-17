@@ -4,7 +4,7 @@ from src.adapters.repositories.connection.HTTPSAdapter import HTTPSAdapter
 from src.adapters.repositories.connection.HTTPAdapter import HTTPAdapter
 from src.adapters.repositories.connection.FileAdapter import FileAdapter
 
-class AdapterFactory:
+class ConnectionFactory:
     @staticmethod
     def get(url: URL):
         if url.scheme == Scheme.FILE.value:
