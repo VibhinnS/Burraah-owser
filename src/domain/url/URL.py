@@ -3,7 +3,7 @@ from typing import Optional
 
 @dataclass
 class URL:
-    scheme: str
+    scheme: Optional[str] = None
     host: Optional[str] = None
     port: Optional[int] = None
     path: Optional[str] = None

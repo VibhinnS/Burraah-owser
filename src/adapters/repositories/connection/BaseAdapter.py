@@ -1,28 +1,28 @@
 import socket
-import ssl
+from abc import abstractmethod
 
-from src.adapters.repositories.cache.SocketCache import SocketCache
-from src.ports.ConnectionRepository import ConnectionRepository
+from lockpy import private
+
 from src.domain.url.URL import URL
 from src.domain.url.Request import Request
+from src.ports.ConnectionRepository import ConnectionRepository
+from src.adapters.repositories.cache.SocketCache import SocketCache
 
-class HTTPSAdapter(ConnectionRepository):
+class BaseConnectionAdapter(ConnectionRepository):
     def __init__(self):
         self.socket_cache = SocketCache()
 
-    def request(self, url: URL):
-        persisted_connection = self.socket_cache.acquire(url)
-        if not persisted_connection:
-            socket_connection = socket.socket(family=socket.AF_INET,
-                              type=socket.SOCK_STREAM,
-                              proto=socket.IPPROTO_TCP)
-        else:
-            socket_connection = persisted_connection
+    @abstractmethod
+    def get_socket_connection(self, url: URL):
+        pass
 
-        socket_connection.connect((url.host, url.port))
-        ctx = ssl.create_default_context()
-        socket_connection = ctx.wrap_socket(socket_connection, server_hostname=url.host)
+    def request(self, url: URL) -> tuple[bytes, bytes, dict]:
+        socket_connection = self.get_socket_connection(url)
+        return self.send_request(url, socket_connection)
 
+
+    @private
+    def send_request(self, url: URL, socket_connection: socket.socket):
         request = (
             f"{Request.GET.value} {url.path} HTTP/1.1\r\n"
             f"{Request.HOST.value}: {url.host}\r\n"
@@ -47,4 +47,3 @@ class HTTPSAdapter(ConnectionRepository):
         content = response.read(content_length)
         self.socket_cache.release(url, socket_connection)
         return status, content, response_headers
-
