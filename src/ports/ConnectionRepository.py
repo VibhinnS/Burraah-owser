@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from io import BufferedReader
 
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 
 class ConnectionRepository(ABC):
     @abstractmethod

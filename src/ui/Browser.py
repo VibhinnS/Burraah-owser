@@ -1,6 +1,6 @@
 import tkinter
-from src.domain.url.URL import URL
-from src.domain.extract.HTMLExtractor import HTMLExtractor
+from src.domain.http.URL import URL
+from src.domain.html.HTMLExtractor import HTMLExtractor
 from layout_engine import compute_layout
 from src.services.RequestService import RequestService
 

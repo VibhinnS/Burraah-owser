@@ -1,7 +1,7 @@
 import os
 
 from src.adapters.repositories.connection.BaseAdapter import BaseConnectionAdapter
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 
 class FileAdapter(BaseConnectionAdapter):
     def get_socket_connection(self, url: URL): pass

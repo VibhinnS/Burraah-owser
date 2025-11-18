@@ -1,6 +1,6 @@
 import socket
 from collections import deque, defaultdict
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 from src.ports.CacheRepository import CacheRepository
 
 

@@ -1,5 +1,5 @@
-from src.domain.url.URL import URL
-from src.domain.url.Scheme import Scheme
+from src.domain.http.URL import URL
+from src.domain.http.Scheme import Scheme
 
 class URLParser:
     @staticmethod

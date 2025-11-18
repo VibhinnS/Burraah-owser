@@ -1,6 +1,6 @@
 import sys
 import tkinter
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 from src.adapters.parser.URLParser import URLParser
 from src.ui.Browser import Browser
 

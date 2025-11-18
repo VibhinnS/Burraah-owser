@@ -1,7 +1,7 @@
 import socket
 
 from src.adapters.repositories.connection.BaseAdapter import BaseConnectionAdapter
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 
 class HTTPAdapter(BaseConnectionAdapter):
     def __init__(self):

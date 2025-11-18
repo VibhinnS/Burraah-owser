@@ -2,7 +2,7 @@ import socket
 import ssl
 
 from src.adapters.repositories.connection.BaseAdapter import BaseConnectionAdapter
-from src.domain.url.URL import URL
+from src.domain.http.URL import URL
 
 class HTTPSAdapter(BaseConnectionAdapter):
     def __init__(self):

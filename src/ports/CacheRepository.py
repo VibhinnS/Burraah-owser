@@ -1,13 +1,14 @@
-import socket
 from abc import ABC, abstractmethod
-from src.domain.url.URL import URL
+from typing import Generic, TypeVar
 
-class CacheRepository(ABC):
+K = TypeVar("K")
+V = TypeVar("V")
+
+class CacheRepository(ABC, Generic[K, V]):
     @abstractmethod
-    def acquire(self, item: URL):
+    def acquire(self, key: K) -> V | None:
         pass
 
     @abstractmethod
-    def release(self, item: URL, sock: socket.socket):
+    def release(self, key: K, value: V) -> None:
         pass
-
