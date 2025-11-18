@@ -1,7 +1,7 @@
 from enum import Enum
 
 class Scheme(Enum):
-    HTTP = "HTTP/1.1"
+    HTTP = "HTTP"
     HTTPS = "HTTPS"
     FILE = "FILE"
     DATA = "DATA"

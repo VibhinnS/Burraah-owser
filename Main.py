@@ -7,7 +7,9 @@ from src.ui.Browser import Browser
 browser = Browser()
 
 if __name__ == "__main__":
-    user_input = "http://www.example.org/"
-    url: URL = URLParser.parse(user_input)
-    browser.load(url)
-    tkinter.mainloop()
+    while True:
+        user_input = input("Enter URL - ")
+        if user_input:
+            url: URL = URLParser.parse(user_input)
+            browser.load(url)
+            tkinter.mainloop()

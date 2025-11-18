@@ -1,50 +1,22 @@
 import socket
 import ssl
 
-from src.adapters.repositories.cache.SocketCache import SocketCache
-from src.ports.ConnectionRepository import ConnectionRepository
+from src.adapters.repositories.connection.BaseAdapter import BaseConnectionAdapter
 from src.domain.url.URL import URL
-from src.domain.url.Request import Request
 
-class HTTPSAdapter(ConnectionRepository):
+class HTTPSAdapter(BaseConnectionAdapter):
     def __init__(self):
-        self.socket_cache = SocketCache()
+        super().__init__()
 
-    def request(self, url: URL):
-        persisted_connection = self.socket_cache.acquire(url)
-        if not persisted_connection:
+    def get_socket_connection(self, url: URL):
+        socket_connection = self.socket_cache.acquire(url)
+        if not socket_connection:
             socket_connection = socket.socket(family=socket.AF_INET,
                               type=socket.SOCK_STREAM,
                               proto=socket.IPPROTO_TCP)
-        else:
-            socket_connection = persisted_connection
 
         socket_connection.connect((url.host, url.port))
         ctx = ssl.create_default_context()
         socket_connection = ctx.wrap_socket(socket_connection, server_hostname=url.host)
 
-        request = (
-            f"{Request.GET.value} {url.path} HTTP/1.1\r\n"
-            f"{Request.HOST.value}: {url.host}\r\n"
-            f"{Request.CONNECTION.value}: Keep-alive\r\n"
-            "\r\n"
-        )
-
-        socket_connection.send(request.encode("utf8"))
-        response = socket_connection.makefile("rb", newline="\r\n")
-        status_line = self.readline_as_string(response)
-        version, status, explanation = status_line.split(" ", 2)
-        response_headers = {}
-
-        while True:
-            line = self.readline_as_string(response)
-            if line == "": break
-            if line:
-                header, value = line.split(":", 1)
-                response_headers[header.casefold()] = value.strip()
-
-        content_length: int = int(response_headers.get("content-length"))
-        content = response.read(content_length)
-        self.socket_cache.release(url, socket_connection)
-        return status, content, response_headers
-
+        return socket_connection

@@ -45,5 +45,6 @@ class BaseConnectionAdapter(ConnectionRepository):
 
         content_length: int = int(response_headers.get("content-length"))
         content = response.read(content_length)
-        self.socket_cache.release(url, socket_connection)
+        if response_headers.get("connection") == "keep-alive":
+            self.socket_cache.release(url, socket_connection)
         return status, content, response_headers

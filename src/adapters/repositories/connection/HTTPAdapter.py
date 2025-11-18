@@ -15,4 +15,5 @@ class HTTPAdapter(BaseConnectionAdapter):
                 type=socket.SOCK_STREAM,
                 proto=socket.IPPROTO_TCP
             )
+        socket_connection.connect((url.host, url.port))
         return socket_connection
