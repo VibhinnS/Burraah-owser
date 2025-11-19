@@ -1,3 +1,4 @@
+import gzip
 import socket
 import time
 from abc import abstractmethod
@@ -58,6 +59,7 @@ class BaseConnectionAdapter(ConnectionRepository):
 
         content_length: int = int(response_headers.get("content-length"))
         content = response.read(content_length)
+        if response_headers.get("Content-Encoding",""): gzip.decompress(content)
         if response_headers.get("connection") == "keep-alive":
             self.socket_cache.release(url, socket_connection)
 
