@@ -42,8 +42,8 @@ class Browser:
                     if cursor_x + word_width > self.WIDTH - self.HSTEP:
                         cursor_y += font.metrics("linespace") * 1.25
                         cursor_x = self.HSTEP
-            self.display_list.append((cursor_x, cursor_y, word))
-            cursor_x += word_width + font.measure(" ")
+                    self.display_list.append((cursor_x, cursor_y, word))
+                    cursor_x += word_width + font.measure(" ")
         return self.display_list
 
     def draw(self):
