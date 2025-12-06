@@ -1,15 +1,15 @@
 import time
 from typing import Optional
 
-from src.domain.cache.CacheEntry import CacheEntry
+from src.domain.cache.Cache import Cache
 from src.domain.http.URL import URL
 from src.ports.CacheRepository import CacheRepository
 
 class AssetCache(CacheRepository):
     def __init__(self):
-        self.cache: dict[str, CacheEntry] = {}
+        self.cache: dict[str, Cache] = {}
 
-    def acquire(self, url: URL) -> Optional[CacheEntry]:
+    def acquire(self, url: URL) -> Optional[Cache]:
         entry = self.cache.get(url.path)
         if not entry: return None
 
@@ -19,5 +19,5 @@ class AssetCache(CacheRepository):
 
         return entry
 
-    def release(self, url: URL, entry: CacheEntry) -> None:
+    def release(self, url: URL, entry: Cache) -> None:
         self.cache[url.path] = entry

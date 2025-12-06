@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class CacheEntry:
+class Cache:
     content: bytes
     headers: dict
     expiry: float

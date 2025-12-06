@@ -8,7 +8,7 @@ browser = Browser()
 
 if __name__ == "__main__":
     while True:
-        user_input = input("Enter URL - ")
+        user_input = "http://www.example.org"
         if user_input:
             url: URL = URLParser.parse(user_input)
             browser.load(url)

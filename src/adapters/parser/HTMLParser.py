@@ -1,7 +1,7 @@
 from src.domain.html.Text import Text
 from src.domain.html.Tag import Tag
 
-class HTMLExtractor:
+class HTMLParser:
     def __init__(self): pass
 
     @staticmethod

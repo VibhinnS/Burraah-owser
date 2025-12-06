@@ -1,8 +1,8 @@
 import tkinter
+import tkinter.font
 from src.domain.http.URL import URL
 from src.domain.html.Text import Text
-from src.domain.html.Tag import Tag
-from src.adapters.parser.HTMLParser import HTMLExtractor
+from src.adapters.parser.HTMLParser import HTMLParser
 from src.services.RequestService import RequestService
 
 class Browser:
@@ -12,7 +12,7 @@ class Browser:
         self.SCROLLSTEP = 100
         self.WIDTH = 800
         self.HEIGHT = 600
-        self.extractor = HTMLExtractor()
+        self.parser = HTMLParser()
         self.main_window = tkinter.Tk()
         self.canvas = tkinter.Canvas(
             self.main_window,
@@ -28,7 +28,7 @@ class Browser:
 
     def load(self, url: URL) -> None:
         body = self.request_service.fetch(url)
-        content_tokens = self.extractor.extract(body)
+        content_tokens = self.parser.extract(body)
         self.layout(content_tokens)
         self.draw()
 

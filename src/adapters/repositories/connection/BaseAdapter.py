@@ -6,7 +6,7 @@ from typing import Optional
 
 from lockpy import private
 
-from src.domain.cache.CacheEntry import CacheEntry
+from src.domain.cache.Cache import Cache
 from src.domain.http.URL import URL
 from src.domain.http.Request import Request
 from src.domain.http.Response import Response
@@ -59,7 +59,8 @@ class BaseConnectionAdapter(ConnectionRepository):
 
         content_length: int = int(response_headers.get("content-length"))
         content = response.read(content_length)
-        if response_headers.get("Content-Encoding",""): gzip.decompress(content)
+        if response_headers.get("content-encoding","") == "gzip":
+            content = gzip.decompress(content)
         if response_headers.get("connection") == "keep-alive":
             self.socket_cache.release(url, socket_connection)
 
@@ -78,11 +79,11 @@ class BaseConnectionAdapter(ConnectionRepository):
     @private
     def is_cacheable(self, response: Response) -> bool:
         cache_control: str = response.response_headers.get("cache-control", "")
-        if cache_control == "max-age": return True
+        if cache_control.startswith("max-age"): return True
         return False
 
     @private
-    def generate_cache_entry(self, response: Response) -> Optional[CacheEntry]:
+    def generate_cache_entry(self, response: Response) -> Optional[Cache]:
         cache_control: str = response.response_headers.get("cache-control")
         try:
             _, value = cache_control.split("max-age=")
@@ -92,7 +93,7 @@ class BaseConnectionAdapter(ConnectionRepository):
 
         cache_expiry = time.time() + max_age
 
-        return CacheEntry(
+        return Cache(
             content=response.content,
             headers=response.response_headers,
             expiry=cache_expiry
