@@ -1,4 +1,4 @@
-from src.adapters.factory.ConnectionFactory import ConnectionFactory
+from src.adapters.factory.http.ConnectionFactory import ConnectionFactory
 from src.domain.http.Response import Response
 from src.domain.http.URL import URL
 from src.adapters.parser.URLParser import URLParser

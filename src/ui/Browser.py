@@ -1,7 +1,9 @@
 import tkinter
 import tkinter.font
+from typing import Literal
+
 from src.domain.http.URL import URL
-from src.domain.html.Text import Text
+from src.domain.layout.LayoutEngine import Layout
 from src.adapters.parser.HTMLParser import HTMLParser
 from src.services.RequestService import RequestService
 
@@ -12,6 +14,9 @@ class Browser:
         self.SCROLLSTEP = 100
         self.WIDTH = 800
         self.HEIGHT = 600
+        self.style: Literal["italic", "roman"] = "roman"
+        self.weight: Literal["normal", "bold"] = "normal"
+        self.size: int = 12
         self.parser = HTMLParser()
         self.main_window = tkinter.Tk()
         self.canvas = tkinter.Canvas(
@@ -23,35 +28,22 @@ class Browser:
         self.main_window.focus_set()
         self.canvas.pack()
         self.display_list: list = []
+        self.line: list = []
         self.scroll = 0
         self.request_service = RequestService()
 
     def load(self, url: URL) -> None:
         body = self.request_service.fetch(url)
         content_tokens = self.parser.extract(body)
-        self.layout(content_tokens)
+        self.display_list = Layout(content_tokens).display_list
         self.draw()
-
-    def layout(self, content_tokens: list):
-        font = tkinter.font.Font()
-        cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        for token in content_tokens:
-            if isinstance(token, Text):
-                for word in token.text.split():
-                    word_width = font.measure(word)
-                    if cursor_x + word_width > self.WIDTH - self.HSTEP:
-                        cursor_y += font.metrics("linespace") * 1.25
-                        cursor_x = self.HSTEP
-                    self.display_list.append((cursor_x, cursor_y, word))
-                    cursor_x += word_width + font.measure(" ")
-        return self.display_list
 
     def draw(self):
         self.canvas.delete("all")
-        for x_coord, y_coord, character in self.display_list:
+        for x_coord, y_coord, character, font in self.display_list:
             if y_coord > self.scroll + self.HEIGHT: continue
             if y_coord + self.VSTEP < self.scroll: continue
-            self.canvas.create_text(x_coord, y_coord - self.scroll, text=character)
+            self.canvas.create_text(x_coord, y_coord - self.scroll, text=character, font=font, anchor="nw")
 
     def scrolldown(self, e):
         self.scroll += self.SCROLLSTEP
