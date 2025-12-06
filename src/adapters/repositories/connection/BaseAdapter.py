@@ -10,7 +10,7 @@ from src.domain.cache.Cache import Cache
 from src.domain.http.URL import URL
 from src.domain.http.Request import Request
 from src.domain.http.Response import Response
-from src.ports.ConnectionRepository import ConnectionRepository
+from src.ports.repositories.connection.ConnectionRepository import ConnectionRepository
 from src.adapters.repositories.cache.SocketCache import SocketCache
 from src.adapters.repositories.cache.AssetCache import AssetCache
 

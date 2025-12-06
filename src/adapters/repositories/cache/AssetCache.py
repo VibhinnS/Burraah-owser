@@ -3,7 +3,7 @@ from typing import Optional
 
 from src.domain.cache.Cache import Cache
 from src.domain.http.URL import URL
-from src.ports.CacheRepository import CacheRepository
+from src.ports.repositories.cache.CacheRepository import CacheRepository
 
 class AssetCache(CacheRepository):
     def __init__(self):
