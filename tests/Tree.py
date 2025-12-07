@@ -6,7 +6,7 @@ service = RequestService()
 parser = HTMLParser()
 url_parser = URLParser()
 
-url = url_parser.parse("https://browser.engineering/html.html")
+url = url_parser.parse("https://www.google.com")
 body = service.fetch(url)
 nodes = parser.extract(body)
 print_tree(nodes)

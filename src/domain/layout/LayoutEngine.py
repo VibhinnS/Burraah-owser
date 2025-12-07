@@ -12,8 +12,7 @@ class Layout:
         self.line: list = []
         self.parameters = Parameters()
 
-        for token in tokens:
-            self.token(token)
+        self.recurse(tokens)
 
         self.flush()
 
@@ -44,28 +43,62 @@ class Layout:
             self.line.append((self.parameters.CURSOR_X, word, font))
             self.parameters.CURSOR_X += word_width + font.measure(" ")
 
-    def handle_tags(self, token: Element):
-        if token.tag == "i":
+    def recurse(self, tree):
+        if isinstance(tree, Text):
+            self.handle_text(tree)
+        else:
+            self.open_tag(tree.tag)
+            for child in tree.children:
+                self.recurse(child)
+            self.close_tag(tree.tag)
+
+    def open_tag(self, tag):
+        if tag == "i":
             self.parameters.STYLE = "italic"
-        elif token.tag == "/i":
-            self.parameters.STYLE = "roman"
-        elif token.tag == "b":
+        elif tag == "b":
             self.parameters.WEIGHT = "bold"
-        elif token.tag == "/b":
-            self.parameters.WEIGHT = "normal"
-        elif token.tag == "small":
+        elif tag == "small":
             self.parameters.CHAR_SIZE -= 2
-        elif token.tag == "/small":
-            self.parameters.CHAR_SIZE += 2
-        elif token.tag == "big":
+        elif tag == "big":
             self.parameters.CHAR_SIZE += 4
-        elif token.tag == "/big":
-            self.parameters.CHAR_SIZE -= 4
-        elif token.tag == "br":
+        elif tag == "br":
             self.flush()
-        elif token.tag == "/p":
+
+    def close_tag(self, tag):
+        if tag == "/i":
+            self.parameters.STYLE = "roman"
+        elif tag == "/b":
+            self.parameters.WEIGHT = "normal"
+        elif tag == "/small":
+            self.parameters.CHAR_SIZE += 2
+        elif tag == "/big":
+            self.parameters.CHAR_SIZE -= 4
+        elif tag == "/p":
             self.flush()
             self.parameters.CURSOR_Y += self.parameters.VSTEP
+
+    def handle_tags(self, token: Element):
+            if token.tag == "i":
+                self.parameters.STYLE = "italic"
+            elif token.tag == "/i":
+                self.parameters.STYLE = "roman"
+            elif token.tag == "b":
+                self.parameters.WEIGHT = "bold"
+            elif token.tag == "/b":
+                self.parameters.WEIGHT = "normal"
+            elif token.tag == "small":
+                self.parameters.CHAR_SIZE -= 2
+            elif token.tag == "/small":
+                self.parameters.CHAR_SIZE += 2
+            elif token.tag == "big":
+                self.parameters.CHAR_SIZE += 4
+            elif token.tag == "/big":
+                self.parameters.CHAR_SIZE -= 4
+            elif token.tag == "br":
+                self.flush()
+            elif token.tag == "/p":
+                self.flush()
+                self.parameters.CURSOR_Y += self.parameters.VSTEP
 
     def flush(self):
         if not self.line: return

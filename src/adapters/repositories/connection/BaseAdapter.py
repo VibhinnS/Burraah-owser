@@ -57,7 +57,11 @@ class BaseConnectionAdapter(ConnectionRepository):
                 header, value = line.split(":", 1)
                 response_headers[header.casefold()] = value.strip()
 
-        content_length: int = int(response_headers.get("content-length"))
+        content_length_str: str = response_headers.get("content-length","")
+        if not content_length_str:
+            content_length: int = 0
+        else:
+            content_length: int = int(content_length_str)
         content = response.read(content_length)
         if response_headers.get("content-encoding","") == "gzip":
             content = gzip.decompress(content)

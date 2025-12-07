@@ -4,6 +4,9 @@ import tkinter.font
 from src.domain.http.URL import URL
 from src.domain.layout.Parameters import Parameters
 from src.domain.layout.LayoutEngine import Layout
+
+from src.adapters.repositories.layout.TkFontMeasurer import TkTextMeasurer
+
 from src.adapters.parser.HTMLParser import HTMLParser
 from src.services.RequestService import RequestService
 
@@ -22,11 +25,12 @@ class Browser:
         self.display_list: list = []
         self.line: list = []
         self.request_service = RequestService()
+        self.measurer = TkTextMeasurer()
 
     def load(self, url: URL) -> None:
         body = self.request_service.fetch(url)
         content_tokens = self.parser.extract(body)
-        self.display_list = Layout(content_tokens).display_list
+        self.display_list = Layout(self.measurer, content_tokens).display_list
         self.draw()
 
     def draw(self):

@@ -1,4 +1,4 @@
-from src.domain.html.SelfClosingTags import SelfClosingTags
+from src.domain.html.HTMLTags import HTMLTags
 from src.domain.html.Text import Text
 from src.domain.html.Element import Element
 
@@ -25,9 +25,9 @@ class HTMLParser:
             self.add_text(text)
         return self.finish()
 
-
     def add_text(self, text: str):
         if text.isspace(): return
+        self.implicit_tags(None)
         parent_node = self.unfinished[-1]
         child_node = Text(text, parent_node)
         parent_node.children.append(child_node)
@@ -36,13 +36,14 @@ class HTMLParser:
         tag, attributes = self.get_attributes(tag)
 
         if tag.startswith("!"): return
+        self.implicit_tags(tag)
         if tag.startswith("/"):
             if len(self.unfinished) == 1: return
             completed_node = self.unfinished.pop()
             parent_node = self.unfinished[-1]
             parent_node.children.append(completed_node)
 
-        elif tag in SelfClosingTags.SELF_CLOSING_TAGS:
+        elif tag in HTMLTags.SELF_CLOSING_TAGS:
             parent_node = self.unfinished[-1]
             child_node = Element(tag, parent_node, attributes)
             parent_node.children.append(child_node)
@@ -53,6 +54,8 @@ class HTMLParser:
             self.unfinished.append(child_node)
 
     def finish(self):
+        if not self.unfinished:
+            self.implicit_tags(None)
         while len(self.unfinished) > 1:
             node = self.unfinished.pop()
             parent = self.unfinished[-1]
@@ -75,6 +78,20 @@ class HTMLParser:
 
         return tag, attributes
 
+    def implicit_tags(self, tag):
+        while True:
+            open_tags = [node.tag for node in self.unfinished]
+            if not open_tags and tag != "html":
+                self.add_tag("html")
+            elif open_tags == ["html"] and tag not in ["head", "body", "/html"]:
+                if tag in HTMLTags.HEAD_TAGS:
+                    self.add_tag("head")
+                else:
+                    self.add_tag("body")
+            elif open_tags == ["html", "head"] and tag not in ["/head"] + HTMLTags.HEAD_TAGS:
+                self.add_tag("/head")
+            else:
+                break
 
 def print_tree(node, indent=0):
     print(" " * indent, node)
