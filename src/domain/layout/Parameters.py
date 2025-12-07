@@ -12,3 +12,5 @@ class Parameters:
     CHAR_SIZE = 12
     STYLE: Literal["italic", "roman"] = "roman"
     WEIGHT: Literal["normal", "bold"] = "normal"
+
+    MAX_REDIRECTS = 10

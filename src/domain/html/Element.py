@@ -1,14 +1,13 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
-from src.domain.html.Element import Element
 from src.domain.html.Node import Node
 
 @dataclass
-class Text(Node):
-    text: str
-    parent: Element
+class Element(Node):
+    tag: str
+    parent: Optional["Element"]
     children: list[Node] = field(default_factory=list)
-
+    
     def __repr__(self):
-        return repr(self.text)
-
+        return "<" + self.tag + ">"

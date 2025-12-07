@@ -1,5 +1,5 @@
 from src.domain.html.Text import Text
-from src.domain.html.Tag import Tag
+from src.domain.html.Element import Element
 from src.domain.layout.Parameters import Parameters
 from src.domain.layout.TextStyle import TextStyle
 
@@ -20,7 +20,7 @@ class Layout:
     def token(self, token):
         if isinstance(token, Text):
             self.handle_text(token)
-        if isinstance(token, Tag):
+        if isinstance(token, Element):
             self.handle_tags(token)
 
     def handle_text(self, token : Text):
@@ -44,7 +44,7 @@ class Layout:
             self.line.append((self.parameters.CURSOR_X, word, font))
             self.parameters.CURSOR_X += word_width + font.measure(" ")
 
-    def handle_tags(self, token: Tag):
+    def handle_tags(self, token: Element):
         if token.tag == "i":
             self.parameters.STYLE = "italic"
         elif token.tag == "/i":
