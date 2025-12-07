@@ -11,4 +11,3 @@ class Text(Node):
 
     def __repr__(self):
         return repr(self.text)
-

@@ -1,3 +1,4 @@
+from src.domain.html.SelfClosingTags import SelfClosingTags
 from src.domain.html.Text import Text
 from src.domain.html.Element import Element
 
@@ -32,6 +33,8 @@ class HTMLParser:
         parent_node.children.append(child_node)
 
     def add_tag(self, tag: str):
+        tag, attributes = self.get_attributes(tag)
+
         if tag.startswith("!"): return
         if tag.startswith("/"):
             if len(self.unfinished) == 1: return
@@ -39,9 +42,14 @@ class HTMLParser:
             parent_node = self.unfinished[-1]
             parent_node.children.append(completed_node)
 
+        elif tag in SelfClosingTags.SELF_CLOSING_TAGS:
+            parent_node = self.unfinished[-1]
+            child_node = Element(tag, parent_node, attributes)
+            parent_node.children.append(child_node)
+
         else:
             parent_node = self.unfinished[-1] if self.unfinished else None
-            child_node = Element(tag, parent_node)
+            child_node = Element(tag, parent_node, attributes)
             self.unfinished.append(child_node)
 
     def finish(self):
@@ -50,6 +58,22 @@ class HTMLParser:
             parent = self.unfinished[-1]
             parent.children.append(node)
         return self.unfinished.pop()
+
+    def get_attributes(self, text: str):
+        parts = text.split()
+        tag = parts[0].casefold()
+        attributes = {}
+
+        for attribute_pair in parts[1:]:
+            if "=" in attribute_pair:
+                key,value = attribute_pair.split("=", 1)
+                if len(value) > 2 and value[0] in ["'", "\""]:
+                    value = value[1:-1]
+                attributes[key.casefold()] = value
+            else:
+                attributes[attribute_pair.casefold()] = ""
+
+        return tag, attributes
 
 
 def print_tree(node, indent=0):
